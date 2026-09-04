@@ -66,6 +66,109 @@ def fetch_nearby_attractions(lat, lon, interests, min_results=5):
     return attractions, radius  # return whatever we got
 
 def fetch_with_radius(lat, lon, interests, radius):
+
+    # Try multiple Overpass servers
+    overpass_urls = [
+        "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+        "https://overpass-api.de/api/interpreter"
+    ]
+
+    query_parts = []
+
+    # Build dynamic query based on interests
+    for interest in interests:
+        if interest in INTEREST_TAG:
+            for key, value in INTEREST_TAG[interest]:
+
+                query_parts.append(
+                    f'node["{key}"="{value}"](around:{radius},{lat},{lon});'
+                )
+
+                query_parts.append(
+                    f'way["{key}"="{value}"](around:{radius},{lat},{lon});'
+                )
+
+                query_parts.append(
+                    f'relation["{key}"="{value}"](around:{radius},{lat},{lon});'
+                )
+
+    if not query_parts:
+        return []
+
+    query_body = "\n".join(query_parts)
+
+    query = f"""
+    [out:json];
+    (
+        {query_body}
+    );
+    out center;
+    """
+
+    # Try each Overpass server
+    for overpass_url in overpass_urls:
+
+        try:
+            response = requests.post(
+                overpass_url,
+                data=query,
+                timeout=30,
+                headers={
+                    "User-Agent": "Yatra-Saarthi Student Travel Planner"
+                }
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                break
+
+        except requests.RequestException:
+            continue
+
+    else:
+        # All servers failed
+        return []
+
+    attractions = []
+    seen = set()
+
+    for element in data.get("elements", []):
+
+        tags = element.get("tags", {})
+        name = tags.get("name")
+
+        if not name:
+            continue
+
+        # Remove duplicates
+        if name in seen:
+            continue
+
+        seen.add(name)
+
+        # Get correct coordinates
+        if element["type"] == "node":
+            lat_val = element.get("lat")
+            lon_val = element.get("lon")
+
+        else:
+            center = element.get("center", {})
+            lat_val = center.get("lat")
+            lon_val = center.get("lon")
+
+        if lat_val is None or lon_val is None:
+            continue
+
+        attractions.append({
+            "name": name,
+            "lat": lat_val,
+            "lon": lon_val,
+            "tags": tags
+        })
+
+    return attractions
+
     overpass_url = "https://overpass-api.de/api/interpreter"
 
     query_parts = []
