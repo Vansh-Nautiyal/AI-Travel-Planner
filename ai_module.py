@@ -78,7 +78,7 @@ def generate_itinerary(travel_details):
 
     try :
         response = client.chat.completions.create(
-            model = "mixtral-8x7b-32768",
+            model = "openai/gpt-oss-20b",
             messages=[
                 {"role" : "system", "content" : "You are a travel planning assistant."},
                 {"role" : "user", "content" : prompt}
