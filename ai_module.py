@@ -4,14 +4,13 @@ import json
 
 def generate_itinerary(travel_details):
     try:
-        api_key = st.secrets["GROQ_API_KEY"]
-    except st.errors.StreamlitSecretNotFoundError:
-        st.warning("⚠️ API key not found.")
-        st.info("Please add your own API key in `.streamlit/secrets.toml` to use the AI itinerary generator.")
-        st.stop()
-    except KeyError:
-        st.warning("⚠️ GROQ_API_KEY not found in secrets.")
-        st.info("To generate your itinerary, please add `GROQ_API_KEY` in `.streamlit/secrets.toml`.")
+        api_key = st.secrets.get("GROQ_API_KEY")
+        if not api_key:
+            st.warning("⚠️ GROQ_API_KEY not found in secrets.")
+            st.info("To generate your itinerary, please add `GROQ_API_KEY` in Streamlit Cloud Settings → Secrets (or `.streamlit/secrets.toml` locally).")
+            st.stop()
+    except Exception as e:
+        st.error(f"Error accessing secrets: {str(e)}")
         st.stop()
 
     client = Groq(api_key=api_key)
@@ -79,7 +78,7 @@ def generate_itinerary(travel_details):
 
     try :
         response = client.chat.completions.create(
-            model = "llama-3.3-70b-versatile",
+            model = "mixtral-8x7b-32768",
             messages=[
                 {"role" : "system", "content" : "You are a travel planning assistant."},
                 {"role" : "user", "content" : prompt}
@@ -88,12 +87,26 @@ def generate_itinerary(travel_details):
         )
 
         content = response.choices[0].message.content
-        return json.loads(content)
-    
-    except json.JSONDecodeError:
-        st.error("AI JSON Decoding Failed !. Please try again")
-        return None
+        
+        # Strip markdown code fences if present (Groq sometimes adds them despite instructions)
+        if content.startswith("```json"):
+            content = content[7:]  # Remove ```json
+        elif content.startswith("```"):
+            content = content[3:]  # Remove ```
+        
+        if content.endswith("```"):
+            content = content[:-3]  # Remove closing ```
+        
+        content = content.strip()
+        
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError as json_err:
+            st.error(f"❌ AI returned invalid JSON. Details: {str(json_err)}")
+            st.debug(f"Raw response: {content[:200]}...")  # Show first 200 chars for debugging
+            return None
     
     except Exception as e:
-        st.error(f"Groq API error : {str(e)}")
+        st.error(f"⚠️ AI Generation Error: {str(e)}")
+        st.debug(f"Error type: {type(e).__name__}")  # Help debug the specific error
         return None
