@@ -42,15 +42,19 @@ def geocode_location(place):
     parameters = {
         "q" : place,
         "format" : "json",
-        "limit" : 1
+        "limit" : 1,
+        "addressdetails": 1
     } 
     response = requests.get(url, params=parameters, headers= {"User-Agent" : "Yatra-Saarthi Student Travel Planner App (educational project)"})
 
     if response.status_code== 200 and response.json():
         data = response.json()[0]
-        return float (data["lat"]), float(data["lon"])
+        country_code = data.get(
+            "address",{}
+        ).get("country_code", "").lower()
+        return float (data["lat"]), float(data["lon"]), country_code
     else :
-        return None, None
+        return None, None, None
     
 
 def fetch_nearby_attractions(lat, lon, interests, min_results=5):

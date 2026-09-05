@@ -1,0 +1,425 @@
+/* =========================================================
+   GLOBAL APP
+   ========================================================= */
+
+.stApp {
+    background: linear-gradient(
+        135deg,
+        #020617 0%,
+        #042469 50%,
+        #050300 100%
+    );
+}
+
+
+/* =========================================================
+   GLOBAL TYPOGRAPHY
+   ========================================================= */
+
+html,
+body,
+[class*="css"] {
+    font-family: Arial, sans-serif;
+}
+
+
+/* =========================================================
+   APP TITLE
+   ========================================================= */
+
+.app-title {
+    text-align: center;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        Times,
+        serif;
+
+    font-size: 60px;
+
+    font-weight: 700;
+
+    margin-top: 10px;
+
+    margin-bottom: 10px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   APP DESCRIPTION
+   ========================================================= */
+
+.app-description {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin-left: 8%;
+    margin-right: 8%;
+    margin-bottom: 35px;
+}
+
+
+.demo-note {
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+div[data-testid="stForm"] {
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    padding: 30px;
+
+    border-radius: 18px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.12);
+
+    backdrop-filter: blur(10px);
+}
+
+
+/* =========================================================
+   INPUT FIELDS
+   ========================================================= */
+
+div[data-testid="stForm"] div[data-baseweb="input"] > div {
+
+    background-color: #1e293b;
+
+    border-radius: 10px;
+}
+
+
+div[data-testid="stForm"] div[data-baseweb="input"] input {
+
+    color: white;
+
+}
+
+
+/* =========================================================
+   SELECT BOXES
+   ========================================================= */
+
+div[data-testid="stForm"]
+div[data-baseweb="select"] > div {
+    background-color: #1e293b;
+    border-radius: 10px;
+    color: white;
+}
+
+
+/* =========================================================
+   MULTISELECT TAGS
+   ========================================================= */
+
+div[data-testid="stForm"]
+div[data-testid="stMultiSelect"]
+div[data-baseweb="tag"] {
+
+    background-color: #334155;
+
+    color: white;
+
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   FORM LABELS
+   ========================================================= */
+
+div[data-testid="stForm"]
+label {
+
+    font-family: Arial, sans-serif;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   GENERATE BUTTON
+   ========================================================= */
+
+div[data-testid="stFormSubmitButton"] button {
+
+    border-radius: 10px;
+
+    font-family: Arial, sans-serif;
+
+    font-weight: 700;
+
+    padding: 10px 20px;
+
+    transition: 0.2s ease;
+}
+
+
+div[data-testid="stFormSubmitButton"] button:hover {
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.section-heading {
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin-top: 25px;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   NEARBY ATTRACTIONS
+   ========================================================= */
+
+.attraction-item {
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    border-radius: 8px;
+
+    padding: 9px 12px;
+
+    margin-bottom: 8px;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   ITINERARY ACTIVITY
+   ========================================================= */
+
+.activity-time {
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 22px;
+
+    margin-top: 10px;
+
+    margin-bottom: 8px;
+}
+
+
+.activity-name {
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.activity-details {
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    border-radius: 12px;
+
+    padding: 18px 22px;
+
+    line-height: 1.8;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   DAILY TOTAL
+   ========================================================= */
+
+.daily-total {
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 18px;
+
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   BUDGET CARD
+   ========================================================= */
+
+.budget-card {
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 15px;
+
+    padding: 20px 25px;
+
+    font-family: Arial, sans-serif;
+}
+
+
+/* =========================================================
+   BUDGET ROW
+   ========================================================= */
+
+.budget-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 12px 5px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   TOTAL BUDGET
+   ========================================================= */
+
+.budget-total {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 15px 5px 5px 5px;
+
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BUDGET MESSAGE
+   ========================================================= */
+
+.budget-message {
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 18px;
+
+    margin-top: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   DOWNLOAD SECTION
+   ========================================================= */
+
+.download-heading {
+
+    text-align: center;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   DOWNLOAD BUTTON
+   ========================================================= */
+
+div[data-testid="stDownloadButton"] button {
+
+    border-radius: 10px;
+
+    font-family: Arial, sans-serif;
+
+    font-weight: 600;
+
+    padding: 10px;
+}
+
+
+/* =========================================================
+   EXPANDERS
+   ========================================================= */
+
+div[data-testid="stExpander"] {
+
+    border-radius: 12px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.12);
+
+    background:
+        rgba(255, 255, 255, 0.04);
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+hr {
+
+    border-color:
+        rgba(255, 255, 255, 0.12);
+}

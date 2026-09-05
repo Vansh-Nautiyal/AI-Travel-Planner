@@ -1,174 +1,339 @@
-#  Yatra Saarthi – AI Student Travel Planner
+# Yatra Saarthi 🧭
 
-Yatra Saarthi is an AI-powered travel planning web application designed specifically for students.  
-It generates personalized, budget-friendly itineraries using Large Language Models, real-time location data, and interactive maps.
+**Yatra Saarthi** is an AI-powered travel planning application built as
+a student project. It generates personalized, budget-conscious travel
+itineraries based on a destination, trip duration, group size,
+interests, and accommodation preference.
 
-🚀 Live Demo: https://yatra-saarthi-01.streamlit.app
+The application combines **Generative AI**, **OpenStreetMap location
+data**, and an interactive map to provide a simple end-to-end travel
+planning experience.
 
----
+> **Demo:** This project is currently configured as a demo application
+> with a limit of 3 itinerary generations per session.
 
-## Features
+## ✨ Features
 
--  AI-powered itinerary generation using Groq LLM
--  Real-time nearby attractions using OpenStreetMap (Overpass API)
--  Interactive map visualization with PyDeck
--  Automatic budget breakdown and cost estimation
--  Downloadable day-wise travel plan in PDF format
--  Secure API key management using Streamlit Secrets
--  Session-based usage limiting for demo control
+- **AI-generated itineraries** using Groq and `openai/gpt-oss-20b`
+- **Day-wise trip planning** with morning, afternoon, evening, and
+    night activities
+- **Nearby attraction discovery** based on selected interests
+- **Interactive map** displaying nearby locations
+- **Budget breakdown** for:
+    -   Accommodation
+    -   Food
+    -   Transport
+    -   Activities
+    -   Miscellaneous expenses
+- **Budget feasibility checking**
+    - Domestic destinations use a recommended minimum of INR 5,000 per
+        person per day
+    - International destinations use a recommended minimum of INR
+        12,000 per person per day
+- **Travel tips** generated along with the itinerary
+- **PDF export** of the generated travel plan
+- **Custom CSS-based UI** for a cleaner Streamlit interface
+- **Session-based usage limit** for the demo
 
----
+## 🛠️ Tech Stack
 
-##  How It Works
+  Technology                  Purpose
+  --------------------------- -------------------------------
+  Python                      Core application logic
+  Streamlit                   Web application and UI
+  Groq                        LLM API
+  `openai/gpt-oss-20b`        Itinerary generation
+  OpenStreetMap / Nominatim   Destination geocoding
+  Overpass API                Nearby attraction discovery
+  PyDeck                      Interactive map visualization
+  ReportLab                   PDF generation
+  Pandas                      Location data handling
+  Custom CSS                  UI styling
 
-1. User enters:
-   - Destination
-   - Duration
-   - Budget
-   - Interests
-   - Accommodation type
+## 🏗️ How It Works
 
-2. The system:
-   - Geocodes the destination
-   - Fetches nearby attractions using OpenStreetMap APIs
-   - Sends structured prompt to Groq LLM
-   - Receives JSON itinerary response
-   - Displays formatted itinerary with budget breakdown
-   - Generates downloadable PDF
+``` text
+User Input
+    │
+    ├── Destination
+    ├── Duration
+    ├── Budget
+    ├── Number of People
+    ├── Interests
+    └── Accommodation
+    │
+    ▼
+Destination Geocoding
+(Nominatim / OpenStreetMap)
+    │
+    ▼
+Country Detection
+    │
+    ▼
+Budget Feasibility Check
+    │
+    ├── Budget too low ──► Show warning and stop
+    │
+    └── Budget acceptable
+            │
+            ▼
+Nearby Attraction Search
+(Overpass API)
+            │
+            ▼
+Interactive Map
+(PyDeck)
+            │
+            ▼
+AI Itinerary Generation
+(Groq + GPT OSS)
+            │
+            ▼
+Structured JSON Itinerary
+            │
+            ├── Day-wise activities
+            ├── Activity costs
+            ├── Budget breakdown
+            └── Travel tips
+            │
+            ▼
+Python Calculates Estimated Trip Cost
+            │
+            ▼
+Compare Estimated Cost
+with User Budget
+            │
+            ▼
+Display Itinerary + Budget + PDF
+```
 
----
+## 💰 Budget Logic
 
-## 🛠 Tech Stack
+A key design decision in Yatra Saarthi is that the user's budget is
+treated as a **spending limit**, not a target.
 
-| Technology | Purpose |
-|------------|----------|
-| Streamlit | Web application framework |
-| Groq API (LLM) | AI itinerary generation |
-| OpenStreetMap + Overpass API | Nearby attractions data |
-| PyDeck | Interactive maps |
-| ReportLab | PDF generation |
-| Pandas | Data handling |
+The AI is instructed to estimate the cost of the recommended itinerary
+realistically rather than trying to spend the entire amount entered by
+the user.
 
-Dependencies (from `requirements.txt`):
+The application first performs a Python-side feasibility check:
 
----
+``` text
+Budget per person per day =
+Total Budget / Number of People / Duration
+```
+
+The current recommended minimums are:
+
+``` text
+Domestic destination       → INR 5,000 / person / day
+International destination  → INR 12,000 / person / day
+```
+
+If the budget falls below the applicable threshold, itinerary generation
+is stopped before making the AI request.
+
+After the itinerary is generated, Python calculates the estimated trip
+cost from the returned budget categories:
+
+``` text
+Estimated Trip Cost =
+Accommodation
++ Food
++ Transport
++ Activities
++ Miscellaneous
+```
+
+The calculated amount is then compared with the user's budget.
+
+This separation prevents a high user budget from automatically causing
+the AI to inflate the estimated expenses.
 
 ## 📂 Project Structure
 
-```
-AI-Travel-Planner/
+``` text
+Yatra-Saarthi/
 │
-├── app.py                # Main Streamlit application
-├── ai_module.py          # Groq LLM integration logic
-├── map_utils.py          # OpenStreetMap & Overpass API utilities
-├── pdf_generator.py      # PDF generation using ReportLab
-├── requirements.txt      # Project dependencies
-└── .streamlit/
-    └── config.toml       # Theme configuration (optional)
+├── app.py                 # Main Streamlit application
+├── ai_module.py           # AI itinerary generation
+├── map_utils.py           # Geocoding and nearby attraction search
+├── pdf_generator.py       # PDF travel-plan generation
+├── style.css              # Custom application styling
+├── requirements.txt       # Python dependencies
+├── README.md              # Project documentation
+│
+├── .streamlit/
+│   └── secrets.toml       # Local secrets (not committed)
+│
+└── .gitignore
 ```
 
----
+## 🚀 Getting Started
 
-## ⚙️ Local Setup Instructions
+### 1. Clone the repository
 
-### 1️) Clone the Repository
-
-```bash
-git clone https://github.com/your-username/AI-Travel-Planner.git
-cd AI-Travel-Planner
+``` bash
+git clone https://github.com/Vansh-Nautiyal/Yatra-Saarthi.git
+cd Yatra-Saarthi
 ```
 
-### 2️) Create and Activate Virtual Environment
+### 2. Create a virtual environment
 
-**Windows:**
-```bash
+Windows:
+
+``` bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
-**Mac/Linux:**
-```bash
+macOS / Linux:
+
+``` bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3️) Install Dependencies
+### 3. Install dependencies
 
-```bash
+``` bash
 pip install -r requirements.txt
 ```
 
-### 4️) Configure API Key
+### 4. Configure the Groq API key
 
-Create a folder named:
+Create:
 
-```
-.streamlit
-```
-
-Inside it, create:
-
-```
-secrets.toml
+``` text
+.streamlit/secrets.toml
 ```
 
-Add your Groq API key:
+and add:
 
-```toml
-GROQ_API_KEY = "your_actual_groq_api_key"
+``` toml
+GROQ_API_KEY = "your_groq_api_key"
 ```
 
-### 5️) Run the Application
+Do **not** commit your API key to GitHub.
 
-```bash
+### 5. Run the application
+
+``` bash
 streamlit run app.py
 ```
 
-The app will open in your browser at:
+The application will open in your browser.
 
-```
-http://localhost:8501
-```
+## 🔑 API / External Services
 
----
+Yatra Saarthi uses the following external services:
 
-## ☁️ Deployment (Streamlit Cloud)
+### Groq
 
-1. Push your project to GitHub
-2. Go to https://share.streamlit.io
-3. Connect your repository
-4. Select:
-   - Branch: `main`
-   - Main file: `app.py`
-5. Add your `GROQ_API_KEY` in **App Settings → Secrets**
-6. Deploy
+Used to generate structured travel itineraries with the
+`openai/gpt-oss-20b` model.
 
-Streamlit Cloud will automatically rebuild the app whenever new commits are pushed to the selected branch.
+### OpenStreetMap Nominatim
 
----
+Used to convert the user's destination into geographic coordinates and
+identify the destination's country.
 
-##  Demo Usage Limitation
+### Overpass API
 
-The deployed demo version limits itinerary generation to **3 uses per session** to manage API usage and prevent misuse.
+Used to search OpenStreetMap data for nearby places matching the user's
+selected interests.
 
----
+The application attempts multiple Overpass servers so that attraction
+discovery can continue if one server is unavailable.
 
-##  Future Enhancements
+## 🗺️ Interest-Based Location Search
 
-- User authentication & login system
-- Trip history storage using database
-- Smarter budget optimization engine
-- API response caching for faster performance
-- Multi-language itinerary generation
-- Personalized recommendation engine
+Nearby locations are selected according to the user's interests.
 
----
+Examples include:
 
+- **Nature** → peaks, waterfalls, hills
+- **Adventure** → attractions, natural reserves, peaks
+- **Food** → cafés and restaurants
+- **History** → monuments, archaeological sites, museums
+- **Photography** → viewpoints and peaks
+- **Nightlife** → bars, pubs, nightclubs
+- **Shopping** → malls, supermarkets, clothing stores, department
+   stores
+- **Spiritual** → temples, churches, shrines
 
-##  License
+The search radius expands progressively from approximately **5 km → 10
+km → 20 km** until enough locations are found or the available results
+are returned.
 
-This project is licensed under the **MIT License**.
+## 📄 PDF Export
 
-You are free to use, modify, and distribute this project with proper attribution.
+After generating an itinerary, users can export the travel plan as a
+PDF.
 
-See the `LICENSE` file for more details.
+The PDF contains the generated itinerary and budget information and is
+created using **ReportLab**.
+
+## 🎓 Project Purpose
+
+Yatra Saarthi was developed as a **student learning project** to explore
+practical applications of:
+
+- Generative AI
+- Prompt engineering
+- Structured LLM responses
+- REST APIs
+- Geocoding
+- OpenStreetMap data
+- Data visualization
+- Streamlit application development
+- PDF generation
+- Frontend customization with CSS
+
+The project focuses on demonstrating how multiple APIs and technologies
+can be combined into a practical AI-powered application.
+
+## ⚠️ Limitations
+
+Yatra Saarthi is a student/demo project and should not be treated as a
+professional travel booking or pricing platform.
+
+Some limitations include:
+
+- AI-generated costs are **estimates**, not live quotations.
+- Transportation, accommodation, food, and activity prices can change.
+- OpenStreetMap coverage varies by location.
+- Nearby attraction availability depends on Overpass API responses.
+- AI recommendations may occasionally contain inaccurate or outdated
+   information.
+- The current application does not directly book hotels, transport, or
+    activities.
+- The demo currently limits users to 3 itinerary generations per
+    session.
+
+## 🔮 Future Improvements
+
+Possible future improvements include:
+
+- Live hotel and transport price integration
+- Weather-aware itinerary planning
+- Real-time travel alerts
+- More accurate destination-specific cost estimation
+- User accounts and saved itineraries
+- Improved recommendation ranking
+- More robust API error handling
+- Multi-destination trip planning
+- Calendar integration
+- Mobile-focused UI improvements
+- More detailed travel analytics
+
+## 👨‍💻 Author
+
+**Vansh Nautiyal**
+
+GitHub: https://github.com/Vansh-Nautiyal
+
+## 📜 License
+
+This project is licensed under the terms specified in the repository's
+`LICENSE` file.
